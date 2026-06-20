@@ -7,9 +7,37 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;600;700&family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css?v=8">
+<link rel="stylesheet" href="styles.css?v=9">
 </head>
 <body>
+
+  <!-- ACCESS GATE -->
+  <div class="gate" id="gate">
+    <div class="gate-bg-blob gate-blob-1"></div>
+    <div class="gate-bg-blob gate-blob-2"></div>
+    <div class="gate-card">
+      <div class="gate-logo">
+        <div class="gate-logo-leaf">🌿</div>
+      </div>
+      <div class="gate-eyebrow">Akses Terhad</div>
+      <h1 class="gate-title">Tenang di tengah <span class="gate-accent">ribut</span></h1>
+      <p class="gate-sub">Worksheet ni dalam fasa akses awal. Sila masukkan <b>kod akses</b> yang anda terima dari penerbit untuk teruskan.</p>
+
+      <form class="gate-form" onsubmit="event.preventDefault(); window.checkGateCode();">
+        <label class="gate-label">Kod Akses</label>
+        <input id="gateInput" type="text" placeholder="cth: XXXXXXXX" autocomplete="off" autocapitalize="characters" spellcheck="false">
+        <button type="submit" class="gate-btn">Masuk &nbsp;→</button>
+        <div id="gateError" class="gate-err"></div>
+      </form>
+
+      <div class="gate-foot">
+        <span>🔒 Anonymous · Privasi terpelihara · Mobile-first</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- APP (tersembunyi sehingga gate dibuka) -->
+  <div id="appRoot" style="display:none;">
 
   <!-- SIDEBAR -->
   <aside class="sidebar no-print" id="sidebar">
@@ -88,6 +116,47 @@
   <script src="worksheets/bab8.js"></script>
   <script src="worksheets/bab9.js"></script>
   <script src="worksheets/bab10.js"></script>
-  <script>App.boot();</script>
+  </div><!-- /#appRoot -->
+
+  <script>
+    (function(){
+      const ACCESS_CODE = "TDTR2026";
+      const STORAGE_KEY = "tdtr_access_granted";
+      const gate = document.getElementById("gate");
+      const appRoot = document.getElementById("appRoot");
+
+      function openApp(){
+        gate.classList.add("gate-leave");
+        setTimeout(()=>{
+          gate.style.display = "none";
+          appRoot.style.display = "";
+          if(window.App && window.App.boot) window.App.boot();
+        }, 380);
+      }
+
+      window.checkGateCode = function(){
+        const v = (document.getElementById("gateInput").value || "").trim().toUpperCase();
+        const err = document.getElementById("gateError");
+        if(v === ACCESS_CODE){
+          localStorage.setItem(STORAGE_KEY, "1");
+          err.textContent = "";
+          openApp();
+        } else {
+          err.textContent = v ? "Kod tak sah. Sila semak semula." : "Sila masukkan kod akses.";
+          const card = document.querySelector(".gate-card");
+          card.classList.remove("shake"); void card.offsetWidth; card.classList.add("shake");
+        }
+      };
+
+      if(localStorage.getItem(STORAGE_KEY) === "1"){
+        gate.style.display = "none";
+        appRoot.style.display = "";
+        window.App.boot();
+      } else {
+        // fokus input
+        setTimeout(()=>{ const i=document.getElementById("gateInput"); if(i) i.focus(); }, 150);
+      }
+    })();
+  </script>
 </body>
 </html>
