@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tenang Di Tengah Ribut — Worksheet</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;600;700&family=Nunito+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css?v=8">
+</head>
+<body>
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar no-print" id="sidebar">
+    <div class="brand">
+      <div class="logo">🌿</div>
+      <div class="bt">Tenang Di<br>Tengah Ribut</div>
+      <button class="side-close" onclick="App.toggleNav(false)" aria-label="Tutup menu">✕</button>
+    </div>
+
+    <div class="side-title">Worksheet</div>
+    <nav id="navList"></nav>
+
+    <div class="side-title">Profil</div>
+    <div class="side-card">
+      <label style="font-size:12px;">Nama / Panggilan</label>
+      <input type="text" id="profileNama" placeholder="Nama anda">
+    </div>
+
+    <div class="side-title">☁ Simpan Awan</div>
+    <div class="side-card">
+      <div id="cloudOff">
+        <button class="iconbtn primary" style="width:100%;justify-content:center;" onclick="App.cloudActivate()">Aktifkan Simpan Awan</button>
+        <div style="margin-top:10px;">
+          <label style="font-size:12px;">Ada kod? Buka semula</label>
+          <input type="text" id="kodInput" placeholder="CALM-XXXX-XXXX" style="text-transform:uppercase;">
+          <button class="iconbtn ghost" style="width:100%;justify-content:center;margin-top:6px;" onclick="App.cloudOpen()">Buka dengan Kod</button>
+        </div>
+      </div>
+      <div id="cloudOn" style="display:none;text-align:center;">
+        <div style="font-size:12px;color:#3a6b48;">Kod Rujukan Anda</div>
+        <div id="kodShow" style="font-family:'Quicksand';font-weight:700;font-size:20px;color:#2f8a4e;letter-spacing:1px;margin:3px 0;">—</div>
+        <button class="iconbtn ghost" style="font-size:12px;" onclick="App.copyKod()">📋 Salin Kod</button>
+        <p style="font-size:11.5px;color:#6b7d72;margin:8px 0 0;">⚠ Simpan kod ni & jangan kongsi. Guna untuk buka di mana-mana peranti.</p>
+      </div>
+      <div id="cloudMsg" style="font-size:12px;margin-top:8px;text-align:center;"></div>
+    </div>
+
+    <div class="side-title">Tindakan</div>
+    <div class="side-card" style="background:#fff;padding:0;">
+      <button class="iconbtn ghost" style="width:100%;justify-content:center;" onclick="App.resetActive()">↺ Set Semula Worksheet Ini</button>
+    </div>
+  </aside>
+  <div class="backdrop no-print" onclick="App.toggleNav(false)"></div>
+
+  <!-- TOPBAR -->
+  <header class="topbar">
+    <button class="hamburger" onclick="App.toggleNav()" aria-label="Menu">☰</button>
+    <div class="topbar-title" id="topTitle">Worksheet</div>
+    <div class="top-actions">
+      <button class="iconbtn ghost" id="cloudBtn" style="display:none;" onclick="App.cloudSaveNow()">☁</button>
+      <button class="iconbtn primary" onclick="App.downloadPDF()">⬇ PDF</button>
+    </div>
+  </header>
+
+  <!-- MAIN -->
+  <main class="main">
+    <div class="wrap">
+      <div id="content"></div>
+    </div>
+  </main>
+
+  <div class="save-state" id="saveState">Tersimpan ✓</div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="app.js?v=3"></script>
+  <!-- modul worksheet (tambah satu baris setiap bab baru) -->
+  <script src="worksheets/rumah.js"></script>
+  <script src="worksheets/rekod.js"></script>
+  <script src="worksheets/bab1.js"></script>
+  <script src="worksheets/bab2.js?v=2"></script>
+  <script src="worksheets/bab3.js"></script>
+  <script src="worksheets/bab4.js"></script>
+  <script src="worksheets/bab5.js"></script>
+  <script src="worksheets/bab6.js"></script>
+  <script src="worksheets/bab7.js"></script>
+  <script src="worksheets/bab8.js"></script>
+  <script src="worksheets/bab9.js"></script>
+  <script src="worksheets/bab10.js"></script>
+  <script>App.boot();</script>
+</body>
+</html>
