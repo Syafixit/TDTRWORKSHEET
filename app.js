@@ -43,10 +43,16 @@
     const root=content();
     const dateField = w.skipDateHeader ? "" :
       `<div class="ws-date"><label>Tarikh</label><input type="date" data-k="meta_tarikh" min="2026-01-01" max="2030-12-31"></div>`;
+    const editionBar = w.hideHeader ? "" : `
+      <div class="edition-bar">
+        <span class="left">Edisi Premium · 2026</span>
+        <span class="right">Tenang Di Tengah Ribut · Worksheet</span>
+      </div>`;
     const header = w.hideHeader ? "" : `
+      ${editionBar}
       <div class="ws-header">
         <div class="eyebrow">${w.subtitle||""}</div>
-        <h1>${w.title}</h1>
+        <h1>${w.title}<span class="h1-dot">.</span></h1>
         <div class="sub">Tenang Di Tengah Ribut</div>
         <div class="rule"></div>
         ${dateField}
@@ -57,6 +63,24 @@
     root.innerHTML = `${header}<div class="ws-body">${w.html}</div>`;
     root.classList.add("page-in");
     if(w.init) w.init(root, api);
+    // Edisi Premium: split "Bahagian X:" jadi pill badge + tajuk serif
+    root.querySelectorAll(".section-head h2").forEach(h2=>{
+      if(h2.dataset.styled) return;
+      const txt = (h2.textContent||"").trim();
+      const m = txt.match(/^(Bahagian\s+[A-Z0-9]+(?:\d*))\s*[:·\-—]\s*(.+)$/i);
+      if(m){
+        const badge = m[1].toUpperCase().replace(/\s+/g," ");
+        const title = m[2].trim();
+        const chevSibling = h2.parentElement.querySelector(".chev");
+        const lineHTML = `<span class="sec-line"></span>`;
+        h2.outerHTML = `<span class="sec-badge">${badge}</span><h2 data-styled="1">${title}</h2>${lineHTML}`;
+        // make sure chev is at the end
+        if(chevSibling){ chevSibling.parentElement.appendChild(chevSibling); }
+      } else {
+        // Tiada prefix "Bahagian" — tetap serif title sahaja
+        h2.dataset.styled = "1";
+      }
+    });
     // muat data
     const raw=localStorage.getItem(dataKey(id));
     const data = raw? JSON.parse(raw):null;
