@@ -199,19 +199,26 @@
     showKodUI(); cloudMsg("Aktif! Simpan kod anda.");
   }
   async function cloudSaveNow(){ const kod=currentKod(); if(!kod||!sb) return; cloudMsg("Menyimpan…"); await pushWorksheet(kod,activeId); cloudMsg("Tersimpan ke awan ✓ "+new Date().toLocaleTimeString("ms-MY")); }
+  /* Tarik semua jawapan untuk satu kod dari awan -> localStorage. Return "ok" | "notfound" | "error:<msg>" */
+  async function restoreKod(raw){
+    const kod=(raw||"").trim().toUpperCase();
+    if(kod.length<8) return "notfound";
+    const res=await Promise.all(registry.map(w=>sb.rpc("get_worksheet",{p_kod:kod,p_worksheet_id:w.id}).then(r=>({id:w.id,...r}))));
+    const err=res.find(r=>r.error); if(err) return "error:"+err.error.message;
+    const hits=res.filter(r=>r.data);
+    if(!hits.length) return "notfound";
+    hits.forEach(r=>localStorage.setItem(dataKey(r.id), JSON.stringify(r.data)));
+    localStorage.setItem(KOD_KEY,kod);
+    return "ok";
+  }
   async function cloudOpen(){
     const kod=(document.getElementById("kodInput").value||"").trim().toUpperCase();
     if(kod.length<8){ cloudMsg("Sila masukkan kod yang sah.",false); return; }
-    if(!sb){ cloudMsg("Sambungan awan tak tersedia.",false); return; }
     cloudMsg("Membuka…");
-    let found=false;
-    for(const w of registry){
-      const {data,error}=await sb.rpc("get_worksheet",{p_kod:kod,p_worksheet_id:w.id});
-      if(error){ cloudMsg("Ralat: "+error.message,false); return; }
-      if(data){ localStorage.setItem(dataKey(w.id), JSON.stringify(data)); found=true; }
-    }
-    if(!found){ cloudMsg("Kod tak dijumpai. Semak semula.",false); return; }
-    localStorage.setItem(KOD_KEY,kod); showKodUI();
+    const r=await restoreKod(kod);
+    if(r.startsWith("error:")){ cloudMsg("Ralat: "+r.slice(6),false); return; }
+    if(r==="notfound"){ cloudMsg("Kod tak dijumpai. Semak semula.",false); return; }
+    showKodUI(); buildNav();
     showWorksheet(activeId||registry[0].id);
     cloudMsg("Jawapan dibuka semula ✓");
   }
@@ -248,7 +255,7 @@
   window.registerWorksheet=function(w){ registry.push(w); };
   window.App={
     boot, go:showWorksheet, toggleNav, toggleSec,
-    cloudActivate, cloudOpen, cloudSaveNow, copyKod, resetActive, downloadPDF,
+    cloudActivate, cloudOpen, restoreKod, cloudSaveNow, copyKod, resetActive, downloadPDF,
     get sb(){return sb;}, kod:currentKod, save:saveActive, clampDate, genKod
   };
 })();

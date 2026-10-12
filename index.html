@@ -21,11 +21,11 @@
       </div>
       <div class="gate-eyebrow">Akses Terhad</div>
       <h1 class="gate-title">Tenang di tengah <span class="gate-accent">ribut</span></h1>
-      <p class="gate-sub">Worksheet ni dalam fasa akses awal. Sila masukkan <b>kod akses</b> yang anda terima dari penerbit untuk teruskan.</p>
+      <p class="gate-sub">Worksheet ni dalam fasa akses awal. Masukkan <b>kod akses</b> dari penerbit, atau <b>kod rujukan anda</b> (CALM-XXXX-XXXX) untuk sambung jawapan lama.</p>
 
       <form class="gate-form" onsubmit="event.preventDefault(); window.checkGateCode();">
-        <label class="gate-label">Kod Akses</label>
-        <input id="gateInput" type="text" placeholder="cth: XXXXXXXX" autocomplete="off" autocapitalize="characters" spellcheck="false">
+        <label class="gate-label">Kod Akses / Kod Rujukan</label>
+        <input id="gateInput" type="text" placeholder="cth: TDTR2026 atau CALM-XXXX-XXXX" autocomplete="off" autocapitalize="characters" spellcheck="false">
         <button type="submit" class="gate-btn">Masuk &nbsp;→</button>
         <div id="gateError" class="gate-err"></div>
       </form>
@@ -101,7 +101,7 @@
 
   <div class="save-state" id="saveState">Tersimpan ✓</div>
 
-  <script src="app.js?v=5"></script>
+  <script src="app.js?v=6"></script>
   <!-- modul worksheet (tambah satu baris setiap bab baru) -->
   <script src="worksheets/rumah.js"></script>
   <script src="worksheets/rekod.js"></script>
@@ -133,18 +133,42 @@
         }, 380);
       }
 
-      window.checkGateCode = function(){
+      function gateFail(msg){
+        const err = document.getElementById("gateError");
+        err.textContent = msg;
+        const card = document.querySelector(".gate-card");
+        card.classList.remove("shake"); void card.offsetWidth; card.classList.add("shake");
+      }
+
+      let busy = false;
+      window.checkGateCode = async function(){
+        if(busy) return;
         const v = (document.getElementById("gateInput").value || "").trim().toUpperCase();
         const err = document.getElementById("gateError");
+        const btn = document.querySelector(".gate-btn");
+        if(!v){ gateFail("Sila masukkan kod akses."); return; }
         if(v === ACCESS_CODE){
           localStorage.setItem(STORAGE_KEY, "1");
           err.textContent = "";
           openApp();
-        } else {
-          err.textContent = v ? "Kod tak sah. Sila semak semula." : "Sila masukkan kod akses.";
-          const card = document.querySelector(".gate-card");
-          card.classList.remove("shake"); void card.offsetWidth; card.classList.add("shake");
+          return;
         }
+        // Kod rujukan awan (CALM-/STRES-…) -> buka jawapan lama terus
+        if(v.length >= 8 && v.includes("-")){
+          busy = true; btn.disabled = true; err.textContent = "Membuka jawapan anda…";
+          const r = await window.App.restoreKod(v);
+          busy = false; btn.disabled = false;
+          if(r === "ok"){
+            localStorage.setItem(STORAGE_KEY, "1");
+            err.textContent = "";
+            openApp();
+            return;
+          }
+          if(r.startsWith("error:")){ gateFail("Tak dapat sambung ke awan. Cuba lagi."); return; }
+          gateFail("Kod rujukan tak dijumpai. Semak semula.");
+          return;
+        }
+        gateFail("Kod tak sah. Sila semak semula.");
       };
 
       if(localStorage.getItem(STORAGE_KEY) === "1"){
