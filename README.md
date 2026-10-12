@@ -11,14 +11,14 @@ panduan praktikal untuk rakyat Malaysia.
 - **Halaman Rumah** dengan kutipan harian, statistik perjalanan, dan akses cepat.
 - **Rekod / Sejarah** — kalendar bulanan tunjuk semua tarikh ada rekod, dengan titik
   berwarna ikut tahap stres.
-- **Auto-simpan** dalam telefon (localStorage) + segerak awan opsyenal melalui Supabase
+- **Auto-simpan** dalam telefon (localStorage) + segerak awan opsyenal melalui Cloudflare D1
   dengan kod rujukan anonymous `CALM-XXXX-XXXX`.
 - **Privacy-first**: tiada login, tiada email, tiada akaun. Customer kekal anonymous.
 - **Mobile-first** — direka untuk telefon.
 
 ## 🚀 Cara Guna
 
-Buka [https://syafixit.github.io/TDTRWORKSHEET/](https://syafixit.github.io/TDTRWORKSHEET/)
+Buka [https://tdtrws.simetry.digital](https://tdtrws.simetry.digital)
 di browser telefon atau komputer.
 
 ## 📂 Struktur
@@ -27,6 +27,9 @@ di browser telefon atau komputer.
 .
 ├── index.html              ← pintu masuk app
 ├── app.js                  ← teras: sidebar, router, awan
+├── src/worker.js           ← Cloudflare Worker: API /api/rpc/* + hidang fail statik
+├── schema.sql              ← skema D1
+├── wrangler.jsonc          ← config Cloudflare (D1 + domain tdtrws.simetry.digital)
 ├── styles.css              ← reka bentuk semua
 └── worksheets/
     ├── rumah.js            ← halaman landing
@@ -39,7 +42,7 @@ di browser telefon atau komputer.
 Web app ini direka dengan privasi sebagai keutamaan:
 - **Tiada akaun diperlukan** — anonymous by design
 - **Kod rujukan** (`CALM-XXXX-XXXX`) berfungsi sebagai password sahaja
-- Data disulit melalui RLS Supabase + RPC `SECURITY DEFINER`
+- Data dalam Cloudflare D1, hanya boleh dicapai melalui API Worker (`/api/rpc/*`) dengan kod rujukan
 - Tiada email, tiada nombor telefon, tiada identifier yang boleh dijejak
 
 ## 🌱 Lesen
@@ -47,3 +50,9 @@ Web app ini direka dengan privasi sebagai keutamaan:
 Hak cipta © 2026 Tenang Di Tengah Ribut. Worksheet ni sebahagian dari ebook
 "Tenang Di Tengah Ribut" — Panduan Praktikal Pengurusan Stres & Kecemasan
 untuk Rakyat Malaysia.
+
+## ☁️ Deploy (Cloudflare)
+
+- Hosting: Cloudflare Workers (static assets) di `tdtrws.simetry.digital`
+- Database: D1 `tdtrworksheet` (dipindah dari Supabase)
+- Deploy manual: `npm i && npx wrangler deploy`

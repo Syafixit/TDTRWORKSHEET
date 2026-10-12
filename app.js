@@ -1,8 +1,15 @@
 /* ================= TENANG DI TENGAH RIBUT — Core App ================= */
 (function(){
-  const SUPABASE_URL = "https://rqbfgnhgmrdbtalcruoj.supabase.co";
-  const SUPABASE_KEY = "sb_publishable_cAEN19NBGDupsNAswwB4rg_UhfY_qI-";
-  let sb=null; try{ sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY,{auth:{persistSession:false}}); }catch(e){}
+  /* Cloud: Cloudflare Worker + D1 (/api/rpc/*). Interface sama macam sb.rpc() Supabase dulu. */
+  const sb={
+    async rpc(name, params){
+      try{
+        const r=await fetch("/api/rpc/"+name,{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify(params||{})});
+        const j=await r.json().catch(()=>({data:null,error:{message:"Respons tidak sah"}}));
+        return {data:j.data??null, error:j.error||(r.ok?null:{message:"HTTP "+r.status})};
+      }catch(e){ return {data:null, error:{message:"Tiada sambungan internet"}}; }
+    }
+  };
 
   const KOD_KEY="calm_kod";
   const NAMA_KEY="calm_nama";

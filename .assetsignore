@@ -1,0 +1,14 @@
+.git
+.github
+.claude
+src
+node_modules
+wrangler.jsonc
+package.json
+package-lock.json
+schema.sql
+supabase_setup.sql
+README.md
+.gitignore
+.assetsignore
+.wrangler
