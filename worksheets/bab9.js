@@ -5,14 +5,17 @@ const html=`
     <b>Jika anda dalam krisis sekarang:</b><br>
     <a class="callbtn" href="tel:0376272929">📞 Befrienders KL · 03-7627 2929</a>
     <a class="callbtn" href="tel:15999">📞 Talian Kasih · 15999</a>
-    <span style="font-size:12.5px;">(24 jam, percuma)</span></div>
+    <a class="callbtn" href="tel:1800180066">📞 MIASA · 1-800-18-0066</a>
+    <a class="callbtn" href="tel:15555">📞 Talian HEAL · 15555</a>
+    <span style="font-size:12.5px;">(Befrienders KL, Talian Kasih &amp; MIASA: 24 jam, percuma · HEAL: setiap hari 8 pagi–12 malam · Kecemasan: 999)</span></div>
 
   <div class="section collapsible open">
     <div class="section-head" onclick="App.toggleSec(this)"><h2>Bahagian A: Nombor Yang Perlu Saya Tahu</h2><span class="chev">▾</span></div>
     <p class="hint">Simpan nombor ini dalam telefon anda SEKARANG.</p>
     <div class="card"><label class="chk2"><input type="checkbox" data-k="nom_befrienders"> <span><b>Befrienders KL</b> — <a href="tel:0376272929">03-7627 2929</a> &nbsp;(dah simpan)</span></label>
       <label class="chk2" style="margin-top:6px;"><input type="checkbox" data-k="nom_talian"> <span><b>Talian Kasih</b> — <a href="tel:15999">15999</a> &nbsp;(dah simpan)</span></label>
-      <label class="chk2" style="margin-top:6px;"><input type="checkbox" data-k="nom_miasa"> <span><b>MIASA</b> — <a href="tel:0327806803">03-2780 6803</a> &nbsp;(dah simpan)</span></label></div>
+      <label class="chk2" style="margin-top:6px;"><input type="checkbox" data-k="nom_miasa"> <span><b>MIASA (24 jam)</b> — <a href="tel:1800180066">1-800-18-0066</a> &nbsp;(dah simpan)</span></label>
+      <label class="chk2" style="margin-top:6px;"><input type="checkbox" data-k="nom_heal"> <span><b>Talian HEAL KKM</b> — <a href="tel:15555">15555</a> &nbsp;(dah simpan)</span></label></div>
     <div class="grid2"><div><label>Hospital berdekatan saya</label><input type="text" data-k="nom_hospital" placeholder="Nama / nombor"></div>
       <div><label>Klinik Kesihatan berdekatan</label><input type="text" data-k="nom_klinik" placeholder="Nama / nombor"></div></div>
 
@@ -66,7 +69,7 @@ const html=`
         <div><label>Tempat selamat untuk saya pergi</label><input type="text" data-k="c2_oren_tempat"></div></div></div>
     <div class="card" style="background:#FBE0DB;border-color:#D9534F;"><b style="color:#c0392b;">🔴 TAHAP MERAH — Krisis, ada fikiran menyakiti diri / tak mahu teruskan hidup</b>
       <p style="font-size:14px;margin:8px 0;"><b>Langkah pertama — hubungi SEKARANG:</b><br>
-        <a class="callbtn" href="tel:0376272929">📞 Befrienders 03-7627 2929</a> <a class="callbtn" href="tel:15999">📞 Talian Kasih 15999</a></p>
+        <a class="callbtn" href="tel:0376272929">📞 Befrienders 03-7627 2929</a> <a class="callbtn" href="tel:15999">📞 Talian Kasih 15999</a> <a class="callbtn" href="tel:1800180066">📞 MIASA 1-800-18-0066</a></p>
       <p style="font-size:13.5px;color:#7a3a2c;">Atau pergi ke Jabatan Kecemasan hospital & katakan: <i>“Saya ada fikiran untuk menyakiti diri. Saya perlukan bantuan.”</i></p>
       <div class="mb"><label>Orang yang akan saya hubungi selepas itu</label><input type="text" data-k="c2_merah_orang"></div></div>
 
