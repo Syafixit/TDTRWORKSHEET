@@ -13,8 +13,12 @@ panduan praktikal untuk rakyat Malaysia.
   berwarna ikut tahap stres.
 - **Auto-simpan** dalam telefon (localStorage) + segerak awan opsyenal melalui Cloudflare D1
   dengan kod rujukan anonymous `CALM-XXXX-XXXX`.
-- **Privacy-first**: tiada login, tiada email, tiada akaun. Customer kekal anonymous.
-- **Mobile-first** — direka untuk telefon.
+- **Privacy-first**: tiada login, tiada akaun. Nama tidak dihantar ke pelayan.
+- **Mobile-first** — direka untuk telefon. Boleh dipasang sebagai app (PWA) dan dibuka tanpa internet.
+- **Tenang Sekarang** — latihan nafas berpandu (Physiological Sigh, Box, 4-7-8, 5-5) + Grounding 5-4-3-2-1.
+- **Butang SOS** di setiap halaman — 999, HEAL 15555, Befrienders KL, MIASA, Talian Kasih (tap untuk telefon).
+- **Kod akses per pembeli** — disemak di pelayan (`/api/lesen`, jadual `lesen`). Tiada kod dalam kod sumber.
+- **Kawalan data** — persetujuan sebelum Simpan Awan, padam data awan, sandaran/pulih fail JSON, padam data peranti.
 
 ## 🚀 Cara Guna
 
@@ -56,3 +60,7 @@ untuk Rakyat Malaysia.
 - Hosting: Cloudflare Workers (static assets) di `tdtrws.simetry.digital`
 - Database: D1 `tdtrworksheet` (dipindah dari Supabase)
 - Deploy manual: `npm i && npx wrangler deploy`
+- Skema baru (jadual `lesen`): `npm run db:schema` (selamat diulang — guna `IF NOT EXISTS`)
+- Tambah kod akses manual: `npx wrangler d1 execute tdtrworksheet --remote --command "INSERT INTO lesen (kod, nota) VALUES ('TDTR-XXXX-XXXX-XXXX','manual')"`
+- Kod lama `AKUTENANGBEBAS` masih diterima melalui `LEGACY_CODES` dalam `wrangler.jsonc` — kosongkan bila pembaca awal dah dapat kod sendiri.
+- Pautan terus dari emel: `https://<domain>/#kod=TDTR-XXXX-XXXX-XXXX` (app buka sendiri).

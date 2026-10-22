@@ -63,6 +63,14 @@ const html=`
   <div class="section">
     <div class="section-head"><h2>Mula di sini</h2></div>
     <p class="hint">Pilihan disusun ikut perjalanan. Tiada keperluan ikut urutan — pilih yang paling relevan sekarang.</p>
+    <button class="cta-card calm" onclick="App.go('tenang_sekarang')">
+      <div class="cta-icon">🫁</div>
+      <div class="cta-body">
+        <div class="cta-title">Tenangkan diri sekarang</div>
+        <div class="cta-sub">Latihan nafas berpandu & grounding — 1 minit</div>
+      </div>
+      <div class="cta-arrow">›</div>
+    </button>
     <button class="cta-card" onclick="App.go('bab1_peta_stres')">
       <div class="cta-icon">📈</div>
       <div class="cta-body">
@@ -79,11 +87,11 @@ const html=`
       </div>
       <div class="cta-arrow">›</div>
     </button>
-    <button class="cta-card crisis" onclick="App.go('bab9_pelan_kecemasan')">
+    <button class="cta-card crisis" onclick="App.sos(true)">
       <div class="cta-icon">🆘</div>
       <div class="cta-body">
         <div class="cta-title">Saya perlukan bantuan sekarang</div>
-        <div class="cta-sub">Pelan kecemasan & nombor talian</div>
+        <div class="cta-sub">Nombor talian 24 jam & pelan kecemasan</div>
       </div>
       <div class="cta-arrow">›</div>
     </button>
@@ -95,7 +103,7 @@ const html=`
     <div id="rumahPath" class="path-list"></div>
   </div>
 
-  <div class="footer-note">Tenang Di Tengah Ribut — Panduan praktikal pengurusan stres & kecemasan untuk rakyat Malaysia. Privasi anda terpelihara: tiada akaun, tiada email. Anonymous by design. 🌿</div>`;
+  <div class="footer-note">Tenang Di Tengah Ribut — Panduan praktikal pengurusan stres & kecemasan untuk rakyat Malaysia. Jawapan anda disimpan dalam telefon ini sahaja melainkan anda aktifkan Simpan Awan. Bukan pengganti rawatan profesional. 🌿</div>`;
 
 const M={
   id:"rumah", nav:"🏡 Rumah", title:"", subtitle:"", skipDateHeader:true, hideHeader:true,

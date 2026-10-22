@@ -45,6 +45,7 @@
   /* ---------- router ---------- */
   function showWorksheet(id){
     const w=moduleOf(id); if(!w) return;
+    const prev=activeModule(); if(prev && prev.beforeLeave){ try{ prev.beforeLeave(); }catch(e){} }
     activeId=id;
     localStorage.setItem("calm_last", id);
     const root=content();
@@ -104,6 +105,7 @@
   /* ---------- sidebar ---------- */
   const NAV_GROUPS = {
     rumah:        {label:"", order:0},
+    tenang_sekarang:{label:"", order:0},
     rekod_sejarah:{label:"", order:0},
     bab1_peta_stres:        {label:"🌱 Permulaan", order:1},
     bab2_peta_badan:        {label:"🌱 Permulaan", order:1},
@@ -187,7 +189,7 @@
   function showKodUI(){ document.getElementById("cloudOff").style.display="none"; document.getElementById("cloudOn").style.display="block"; document.getElementById("kodShow").textContent=currentKod(); document.getElementById("cloudBtn").style.display="flex"; }
   async function pushWorksheet(kod,id){
     const raw=localStorage.getItem(dataKey(id)); if(!raw) return true;
-    const {error}=await sb.rpc("save_worksheet",{p_kod:kod,p_worksheet_id:id,p_nama:nama(),p_data:JSON.parse(raw)});
+    const {error}=await sb.rpc("save_worksheet",{p_kod:kod,p_worksheet_id:id,p_data:JSON.parse(raw)});
     return !error;
   }
   async function cloudPushAll(kod){ for(const w of registry){ await pushWorksheet(kod,w.id); if(w.onCloudActivate) await w.onCloudActivate(kod, sb); } }
@@ -219,6 +221,66 @@
   let cloudT;
   function scheduleCloud(){ const kod=currentKod(); if(!kod||!sb) return; clearTimeout(cloudT); cloudT=setTimeout(()=>pushWorksheet(kod,activeId),2500); }
 
+  /* ---------- privasi: persetujuan, padam, sandaran ---------- */
+  function sheet(id, open){ const el=document.getElementById(id); if(!el) return; el.classList.toggle("open", !!open); document.body.classList.toggle("sheet-open", !!open); }
+  function cloudConsent(arg){
+    if(arg===undefined){ const c=document.getElementById("consentChk"); if(c) c.checked=false; sheet("consentSheet", true); return; }
+    if(arg===false){ sheet("consentSheet", false); return; }
+    const c=document.getElementById("consentChk");
+    if(!c || !c.checked){ c && c.closest("label").classList.add("need"); return; }
+    localStorage.setItem("calm_consent", new Date().toISOString());
+    sheet("consentSheet", false); cloudActivate();
+  }
+  async function cloudDelete(){
+    const kod=currentKod(); if(!kod) return;
+    if(!confirm("Padam SEMUA jawapan dan rekod stres yang disimpan di pelayan untuk kod "+kod+"?\n\nData dalam telefon ini kekal.")) return;
+    cloudMsg("Memadam…");
+    const {error}=await sb.rpc("delete_all",{p_kod:kod});
+    if(error){ cloudMsg("Gagal padam: "+error.message,false); return; }
+    localStorage.removeItem(KOD_KEY); localStorage.removeItem("calm_consent");
+    document.getElementById("cloudOn").style.display="none"; document.getElementById("cloudOff").style.display="block";
+    document.getElementById("cloudBtn").style.display="none";
+    cloudMsg("Data awan dipadam ✓");
+  }
+  const OWN_KEY=k=>/^(ws_|calm_|stresslogs_|bab\d+_)/.test(k);
+  function exportData(){
+    saveActive();
+    const out={app:"tdtr-worksheet",versi:1,dieksport:new Date().toISOString(),data:{}};
+    for(let i=0;i<localStorage.length;i++){ const k=localStorage.key(i); if(OWN_KEY(k) && k!=="calm_kod") out.data[k]=localStorage.getItem(k); }
+    const blob=new Blob([JSON.stringify(out,null,1)],{type:"application/json"});
+    const a=document.createElement("a"); a.href=URL.createObjectURL(blob);
+    a.download="tenang-sandaran-"+new Date().toISOString().slice(0,10)+".json"; document.body.appendChild(a); a.click();
+    setTimeout(()=>{ URL.revokeObjectURL(a.href); a.remove(); }, 500);
+  }
+  function importData(input){
+    const f=input.files && input.files[0]; if(!f) return;
+    const rd=new FileReader();
+    rd.onload=()=>{
+      try{
+        const j=JSON.parse(rd.result);
+        if(j.app!=="tdtr-worksheet" || !j.data) throw new Error("bukan fail sandaran app ini");
+        if(!confirm("Pulihkan sandaran bertarikh "+String(j.dieksport||"").slice(0,10)+"? Jawapan semasa dalam peranti ini akan ditimpa.")) return;
+        Object.entries(j.data).forEach(([k,v])=>{ if(OWN_KEY(k)) localStorage.setItem(k, v); });
+        buildNav(); showWorksheet(activeId||"rumah"); alert("Sandaran dipulihkan ✓");
+      }catch(e){ alert("Tak dapat baca fail: "+e.message); }
+      input.value="";
+    };
+    rd.readAsText(f);
+  }
+  function wipeDevice(){
+    if(!confirm("Padam SEMUA jawapan, rekod stres dan nama dalam peranti ini?\n\nTip: buat Sandaran dulu jika mahu simpan. Data awan (jika ada) tidak terjejas.")) return;
+    const ks=[]; for(let i=0;i<localStorage.length;i++){ const k=localStorage.key(i); if(OWN_KEY(k)) ks.push(k); }
+    ks.forEach(k=>localStorage.removeItem(k));
+    location.reload();
+  }
+  function sos(open){ sheet("sosSheet", open); }
+  document.addEventListener("keydown", e=>{ if(e.key==="Escape"){ sheet("sosSheet",false); sheet("consentSheet",false); } });
+
+  /* ---------- cetak: textarea ikut panjang jawapan ---------- */
+  function growAll(){ document.querySelectorAll("#content textarea").forEach(t=>{ t.style.height="auto"; t.style.height=(t.scrollHeight+14)+"px"; }); }
+  window.addEventListener("beforeprint", ()=>{ document.querySelectorAll("#content .collapsible").forEach(c=>c.classList.add("print-open")); growAll(); });
+  window.addEventListener("afterprint", ()=>{ document.querySelectorAll("#content .print-open").forEach(c=>c.classList.remove("print-open")); });
+
   /* ---------- actions ---------- */
   function resetActive(){ if(!confirm("Padam jawapan worksheet ini & mula semula? (Kod awan kekal)")) return; localStorage.removeItem(dataKey(activeId)); showWorksheet(activeId); }
   function downloadPDF(){ saveActive(); window.print(); }
@@ -235,11 +297,14 @@
     if(currentKod()) showKodUI();
     // delegated auto-save
     content().addEventListener("input", saveActive);
+    content().addEventListener("input", e=>{ const t=e.target; if(t.tagName==="TEXTAREA"){ t.style.height="auto"; t.style.height=(t.scrollHeight+4)+"px"; } });
     content().addEventListener("change", e=>{ if(e.target.type==="checkbox"){ saveActive(); const m=activeModule(); if(m && m.onChange) m.onChange(e, content()); } });
     // nav default
     if(window.innerWidth>860) document.body.classList.add("nav-open");
     const last=localStorage.getItem("calm_last");
     const firstTime = !last && !localStorage.getItem(NAMA_KEY);
+    const goParam=new URLSearchParams(location.search).get("go");
+    if(goParam && moduleOf(goParam)){ showWorksheet(goParam); return; }
     showWorksheet((last && moduleOf(last))? last : (firstTime && moduleOf("rumah") ? "rumah" : (moduleOf("rumah")?"rumah":registry[0].id)));
   }
 
@@ -249,6 +314,7 @@
   window.App={
     boot, go:showWorksheet, toggleNav, toggleSec,
     cloudActivate, cloudOpen, cloudSaveNow, copyKod, resetActive, downloadPDF,
+    cloudConsent, cloudDelete, exportData, importData, wipeDevice, sos,
     get sb(){return sb;}, kod:currentKod, save:saveActive, clampDate, genKod
   };
 })();

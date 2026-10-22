@@ -20,3 +20,21 @@ CREATE TABLE IF NOT EXISTS stress_logs (
   updated_at TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ','now')),
   PRIMARY KEY (kod, log_date)
 );
+
+-- Kod akses pembeli. Diisi oleh Worker pembayaran (CHIP) selepas bayaran berjaya,
+-- atau secara manual: INSERT INTO lesen (kod, nota) VALUES ('TDTR-XXXX-XXXX-XXXX', 'manual');
+CREATE TABLE IF NOT EXISTS lesen (
+  kod            TEXT PRIMARY KEY,
+  pesanan_id     TEXT,
+  pakej          TEXT,
+  status         TEXT NOT NULL DEFAULT 'aktif' CHECK (status IN ('aktif','dibatal')),
+  nota           TEXT,
+  dicipta        TEXT NOT NULL DEFAULT (strftime('%Y-%m-%dT%H:%M:%fZ','now')),
+  guna_pertama   TEXT,
+  guna_terakhir  TEXT,
+  kiraan_guna    INTEGER NOT NULL DEFAULT 0
+);
+CREATE INDEX IF NOT EXISTS lesen_pesanan ON lesen (pesanan_id);
+
+-- Kolum `nama` dalam worksheet_responses tidak lagi diisi (sejak Okt 2026).
+-- Untuk padam nama lama yang pernah disimpan:  UPDATE worksheet_responses SET nama = NULL;

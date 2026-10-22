@@ -19,5 +19,9 @@
   "routes": [
     { "pattern": "tdtrws.simetry.digital", "custom_domain": true }
   ],
+  "vars": {
+    // Kod lama yang masih diterima (pisah koma). Kosongkan bila semua pembeli dah ada kod sendiri.
+    "LEGACY_CODES": "AKUTENANGBEBAS"
+  },
   "observability": { "enabled": true }
 }
