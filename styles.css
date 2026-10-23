@@ -257,13 +257,8 @@ input[type=range]{flex:1;accent-color:var(--teal);height:6px;}
 .bt-opt.active{background:var(--white);color:var(--teal-dark);
   box-shadow:0 2px 6px rgba(44,110,135,.12);}
 .bt-opt:hover:not(.active){color:var(--teal-dark);}
-.skin{fill:#F0D4B0;stroke:#A87E50;stroke-width:1.5;stroke-linejoin:round;}
-.hair-short,.hair-long{fill:#2E2018;stroke:#1E1410;stroke-width:1;stroke-linejoin:round;}
-.singlet{fill:#FAFCFD;stroke:#7B8C94;stroke-width:1.5;stroke-linejoin:round;}
-.shorts{fill:var(--coral);stroke:#A8503F;stroke-width:1.5;stroke-linejoin:round;}
-.tshirt,.tshirt-long{fill:var(--teal);stroke:var(--teal-dark);stroke-width:1.5;stroke-linejoin:round;}
-.tracksuit{fill:#3A4A52;stroke:#1F2E36;stroke-width:1.5;stroke-linejoin:round;}
-.tudung{fill:#D88A78;stroke:var(--coral);stroke-width:1.5;stroke-linejoin:round;}
+.fig-sil{fill:#FBF4E2;}
+.fig-line{fill:#14202B;}
 .model-layer[hidden]{display:none;}
 .wheelsvg{display:block;margin:8px auto;width:300px;max-width:100%;height:auto;}
 .circlesvg{display:block;margin:8px auto;width:240px;max-width:90%;height:auto;}
@@ -307,9 +302,9 @@ input[type=range]{flex:1;accent-color:var(--teal);height:6px;}
   .cal-head{font-size:10.5px;}
 }
 .body-base{fill:var(--teal-soft);stroke:var(--teal);stroke-width:1.5;}
-.zone{fill:#3E8DA8;fill-opacity:0;stroke:#3E8DA8;stroke-opacity:.35;stroke-width:1;cursor:pointer;transition:fill-opacity .15s;}
+.zone{fill:#3E8DA8;fill-opacity:0;stroke:#3E8DA8;stroke-opacity:.3;stroke-width:1;stroke-dasharray:3 2;cursor:pointer;transition:fill-opacity .15s;}
 .zone:hover{fill-opacity:.18;}
-.zone.sel{fill:var(--coral);fill-opacity:.78;stroke:var(--coral);stroke-opacity:1;}
+.zone.sel{fill:var(--coral);fill-opacity:.55;stroke:var(--coral);stroke-opacity:1;stroke-dasharray:none;}
 .body-picked{font-size:14px;color:var(--teal-dark);background:var(--teal-soft);border-radius:10px;padding:9px 12px;margin-top:6px;text-align:center;font-weight:600;}
 
 /* Tracker (Bab 1 — jurnal stres) */

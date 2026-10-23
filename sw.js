@@ -1,11 +1,11 @@
 /* Service worker — app boleh dibuka tanpa internet selepas lawatan pertama.
    Strategi: network-first untuk semua fail app (sentiasa versi terbaru bila online),
    jatuh ke cache bila offline. /api/* tidak pernah di-cache. Naikkan VERSI bila ubah senarai fail. */
-const VERSI = "tdtr-ws-v12";
+const VERSI = "tdtr-ws-v13";
 const TERAS = [
-  "./", "index.html", "styles.css?v=12", "app.js?v=6", "manifest.webmanifest",
+  "./", "index.html", "styles.css?v=13", "app.js?v=6", "manifest.webmanifest",
   "worksheets/rumah.js?v=2", "worksheets/tenang.js?v=1", "worksheets/rekod.js",
-  "worksheets/bab1.js", "worksheets/bab2.js?v=2", "worksheets/bab3.js", "worksheets/bab4.js",
+  "worksheets/bab1.js", "worksheets/bab2.js?v=3", "worksheets/bab3.js", "worksheets/bab4.js",
   "worksheets/bab5.js", "worksheets/bab6.js", "worksheets/bab7.js", "worksheets/bab8.js",
   "worksheets/bab9.js", "worksheets/bab10.js", "icons/icon-192.png"
 ];
